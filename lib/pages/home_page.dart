@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:band_names/services/socket_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:band_names/models/band.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,12 +24,23 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    ServerStatus serverStatus =
+        Provider.of<SocketService>(context).serverStatus;
     return Scaffold(
       appBar: AppBar(
-        title: Text('BandNames', style: TextStyle(color: Colors.black87)),
-        backgroundColor: Colors.white,
-        elevation: 1,
-      ),
+          title: Text('BandNames', style: TextStyle(color: Colors.black87)),
+          backgroundColor: Colors.white,
+          elevation: 1,
+          actions: [
+            Container(
+                margin: EdgeInsets.only(right: 10),
+                child: IconButton(
+                  icon: serverStatus == ServerStatus.online
+                      ? Icon(Icons.check_circle, color: Colors.green[200])
+                      : Icon(Icons.offline_bolt, color: Colors.red[200]),
+                  onPressed: addNewBand,
+                ))
+          ]),
       body: ListView.builder(
           itemCount: bands.length,
           itemBuilder: (context, i) => _bandTile(bands[i])),

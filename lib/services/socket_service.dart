@@ -5,8 +5,11 @@ enum ServerStatus { online, offline, connecting }
 
 class SocketService with ChangeNotifier {
   ServerStatus _serverStatus = ServerStatus.connecting;
+  late IO.Socket _socket;
 
-  get serverStatus => _serverStatus;
+  ServerStatus get serverStatus => _serverStatus;
+  IO.Socket get socket => _socket;
+  Function get emit => _socket.emit;
 
   SocketService() {
     _initConfig();
@@ -15,26 +18,26 @@ class SocketService with ChangeNotifier {
   void _initConfig() {
     // IO.Socket socket = IO.io('https://vibramon.co/ws/socket.io/', {
     // IO.Socket socket = IO.io('https://express-server-socket-io.onrender.com/', {
-    IO.Socket socket = IO.io('http://192.168.2.31:3000/', {
+    _socket = IO.io('http://192.168.2.31:3000/', {
       'transports': ['websocket'],
       'autoConnect': true,
     });
-    socket.onConnect((_) {
+    _socket.onConnect((_) {
       _serverStatus = ServerStatus.online;
       notifyListeners();
       print('connect');
     });
-    socket.onDisconnect((_) {
+    _socket.onDisconnect((_) {
       _serverStatus = ServerStatus.offline;
       notifyListeners();
       print('disconnect');
     });
-    socket.on('nuevo-mensaje', (payload) {
-      print('nuevo mensaje');
-      print('Nombre: ${payload['nombre']}');
-      print('Email: ${payload['email']}');
-      print(
-          'Mensaje: ${payload.containsKey('mensaje') ? payload['mensaje'] : 'No hay mensaje'}');
-    });
+    // socket.on('nuevo-mensaje', (payload) {
+    //   print('nuevo mensaje');
+    //   print('Nombre: ${payload['nombre']}');
+    //   print('Email: ${payload['email']}');
+    //   print(
+    //       'Mensaje: ${payload.containsKey('mensaje') ? payload['mensaje'] : 'No hay mensaje'}');
+    // });
   }
 }
