@@ -29,6 +29,12 @@ class SocketService with ChangeNotifier {
       notifyListeners();
       print('disconnect');
     });
-    socket.on('fromServer', (_) => print(_));
+    socket.on('nuevo-mensaje', (payload) {
+      print('nuevo mensaje');
+      print('Nombre: ${payload['nombre']}');
+      print('Email: ${payload['email']}');
+      print(
+          'Mensaje: ${payload.containsKey('mensaje') ? payload['mensaje'] : 'No hay mensaje'}');
+    });
   }
 }
