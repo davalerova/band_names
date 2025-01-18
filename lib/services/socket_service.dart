@@ -17,8 +17,8 @@ class SocketService with ChangeNotifier {
 
   void _initConfig() {
     // IO.Socket socket = IO.io('https://vibramon.co/ws/socket.io/', {
-    // IO.Socket socket = IO.io('https://express-server-socket-io.onrender.com/', {
-    _socket = IO.io('http://192.168.2.31:3000/', {
+    // _socket = IO.io('http://192.168.2.31:3000/', {
+    _socket = IO.io('https://express-server-socket-io.onrender.com/', {
       'transports': ['websocket'],
       'autoConnect': true,
     });

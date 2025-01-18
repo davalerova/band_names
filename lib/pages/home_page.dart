@@ -109,6 +109,9 @@ class HomePageState extends State<HomePage> {
                 title: Text('New band name:'),
                 content: TextField(
                   controller: textController,
+                  autofocus: true,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.sentences,
                 ),
                 actions: <Widget>[
                   MaterialButton(
