@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:band_names/models/band.dart';
 import 'package:provider/provider.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -56,9 +57,16 @@ class HomePageState extends State<HomePage> {
                   onPressed: null,
                 ))
           ]),
-      body: ListView.builder(
-          itemCount: bands.length,
-          itemBuilder: (context, i) => _bandTile(bands[i])),
+      body: Column(
+        children: [
+          _showGraph(),
+          Expanded(
+            child: ListView.builder(
+                itemCount: bands.length,
+                itemBuilder: (context, i) => _bandTile(bands[i])),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
           elevation: 1, onPressed: addNewBand, child: Icon(Icons.add)),
     );
@@ -146,5 +154,55 @@ class HomePageState extends State<HomePage> {
     }
 
     Navigator.pop(context);
+  }
+
+// Mostar gráfica
+  Widget _showGraph() {
+    Map<String, double> dataMap = {};
+    // dataMap.putIfAbsent('Flutter', () => 5);
+    for (var band in bands) {
+      dataMap.putIfAbsent(band.name, () => band.votes.toDouble());
+    }
+
+    final List<Color> colorList = [
+      Colors.blue[50] as Color,
+      Colors.blue[200] as Color,
+      Colors.pink[50] as Color,
+      Colors.pink[200] as Color,
+      Colors.yellow[50] as Color,
+      Colors.yellow[200] as Color,
+    ];
+
+    return SizedBox(
+      width: double.infinity,
+      height: 200,
+      child: PieChart(
+        dataMap: dataMap.isEmpty ? {'No hay datos': 0} : dataMap,
+        animationDuration: const Duration(milliseconds: 800),
+        chartLegendSpacing: 32,
+        chartRadius: MediaQuery.of(context).size.width / 3,
+        colorList: colorList,
+        initialAngleInDegree: 0,
+        chartType: ChartType.ring,
+        ringStrokeWidth: 20,
+        centerText: "Bands",
+        legendOptions: const LegendOptions(
+          showLegendsInRow: false,
+          legendPosition: LegendPosition.right,
+          showLegends: true,
+          legendShape: BoxShape.circle,
+          legendTextStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        chartValuesOptions: const ChartValuesOptions(
+          showChartValueBackground: true,
+          showChartValues: true,
+          showChartValuesInPercentage: false,
+          showChartValuesOutside: false,
+          decimalPlaces: 0,
+        ),
+      ),
+    );
   }
 }
