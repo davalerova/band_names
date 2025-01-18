@@ -15,12 +15,26 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  List<Band> bands = [
-    Band(id: '1', name: 'Metallica', votes: 5),
-    Band(id: '2', name: 'Queen', votes: 1),
-    Band(id: '3', name: 'Héroes del Silencio', votes: 2),
-    Band(id: '4', name: 'Bon Jovi', votes: 5),
-  ];
+  List<Band> bands = [];
+
+  @override
+  void initState() {
+    final socketService = Provider.of<SocketService>(context, listen: false);
+    socketService.socket.on('active-bands', (payload) {
+      print('active-bands $payload');
+      setState(() {
+        bands = (payload as List<dynamic>).map((e) => Band.fromMap(e)).toList();
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    final socketService = Provider.of<SocketService>(context, listen: false);
+    socketService.socket.off('active-bands');
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +52,7 @@ class HomePageState extends State<HomePage> {
                   icon: serverStatus == ServerStatus.online
                       ? Icon(Icons.check_circle, color: Colors.green[200])
                       : Icon(Icons.offline_bolt, color: Colors.red[200]),
-                  onPressed: addNewBand,
+                  onPressed: null,
                 ))
           ]),
       body: ListView.builder(

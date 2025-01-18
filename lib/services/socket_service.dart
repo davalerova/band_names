@@ -39,5 +39,8 @@ class SocketService with ChangeNotifier {
     //   print(
     //       'Mensaje: ${payload.containsKey('mensaje') ? payload['mensaje'] : 'No hay mensaje'}');
     // });
+    // socket.on('active-bands', (payload) {
+    //   print('active-bands $payload');
+    // });
   }
 }
